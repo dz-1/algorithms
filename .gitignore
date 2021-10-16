@@ -56,6 +56,11 @@ build/
 gradle.properties
 !gradle-wrapper.jar
 
-**/*tgz
-**/Chart.lock
-/venv2/
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+
