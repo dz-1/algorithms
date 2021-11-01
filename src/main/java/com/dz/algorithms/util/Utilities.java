@@ -9,6 +9,14 @@ public class Utilities {
         }
     }
 
+    public static void swap(Integer[] a, int i, int j) {
+        if (i!=j){
+            int tmp = a[i];
+            a[i] = a[j];
+            a[j] = tmp;
+        }
+    }
+
     public static int maxNonNegative(int[] a){
         int max = -1;
         for (int i=0; i<a.length; ++i){
