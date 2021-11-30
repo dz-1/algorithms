@@ -4,8 +4,8 @@ import java.util.*;
 
 import static com.dz.algorithms.util.Utilities.swap;
 
-public class Solution {
-    private Solution() {
+public class Solutions {
+    private Solutions() {
         //util
     }
 
@@ -841,43 +841,43 @@ public class Solution {
         int n = 26;
         int[] countLetters = new int[n];
 
-        for (int i=0; i<s.length(); ++i){
-            countLetters[s.charAt(i)-'a']++;
+        for (int i = 0; i < s.length(); ++i) {
+            countLetters[s.charAt(i) - 'a']++;
         }
 
         Map<Integer, Integer> freqMap = new TreeMap<>();
 
-        for (int i=0; i<n; ++i){
+        for (int i = 0; i < n; ++i) {
             int freq = countLetters[i];
-            if (freq!=0){
+            if (freq != 0) {
                 int count = 1;
 
-                if (freqMap.containsKey(freq)){
-                    count=freqMap.get(freq)+1;
+                if (freqMap.containsKey(freq)) {
+                    count = freqMap.get(freq) + 1;
                 }
 
                 freqMap.put(freq, count);
             }
         }
 
-        if (freqMap.size()==1){
+        if (freqMap.size() == 1) {
             return "YES";
-        }else if (freqMap.size()!=2){
+        } else if (freqMap.size() != 2) {
             return "NO";
         }
 
         int[][] freqArray = new int[2][2];
         int i = 0;
 
-        for(Map.Entry<Integer, Integer> entry: freqMap.entrySet()){
+        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
             freqArray[i][0] = entry.getKey();
             freqArray[i][1] = entry.getValue();
             i++;
         }
 
-        if (freqArray[0][1]==1){
+        if (freqArray[0][1] == 1) {
             return "YES";
-        }else if (freqArray[1][1]==1 && freqArray[1][0]-freqArray[0][0]==1){
+        } else if (freqArray[1][1] == 1 && freqArray[1][0] - freqArray[0][0] == 1) {
             return "YES";
         }
 
@@ -895,58 +895,58 @@ public class Solution {
         char c = s.charAt(0);
         int num = 1;
 
-        for (int i=1; i<n; ++i){
+        for (int i = 1; i < n; ++i) {
             char d = s.charAt(i);
-            if (d==c){
+            if (d == c) {
                 num++;
-            }else{
+            } else {
                 lengthBuff.add(num);
                 charBuff.add(c);
 
                 addFreq(lengthFreq, num);
 
-                num=1;
+                num = 1;
             }
 
-            c=d;
+            c = d;
         }
 
         lengthBuff.add(num);
         charBuff.add(c);
         addFreq(lengthFreq, num);
 
-        for (int len=2; len<=n; len++){
-            for (Map.Entry<Integer, Integer> entry : lengthFreq.entrySet()){
+        for (int len = 2; len <= n; len++) {
+            for (Map.Entry<Integer, Integer> entry : lengthFreq.entrySet()) {
                 int repeatNum = entry.getKey();
                 int freq = entry.getValue();
 
-                if (repeatNum>=len){
-                    count+=(repeatNum-len+1)*freq;
+                if (repeatNum >= len) {
+                    count += (repeatNum - len + 1) * freq;
                 }
             }
         }
 
         Map<Integer, Integer> oddFreq = new HashMap();
 
-        for (int i=0; i<lengthBuff.size(); ++i){
-            if (lengthBuff.get(i)==1
-                    && i>0
-                    && i<lengthBuff.size()-1
-                    && charBuff.get(i-1).equals(charBuff.get(i+1))){
-                int left = lengthBuff.get(i-1);
-                int right = lengthBuff.get(i+1);
-                int min = left<=right?left:right;
+        for (int i = 0; i < lengthBuff.size(); ++i) {
+            if (lengthBuff.get(i) == 1
+                    && i > 0
+                    && i < lengthBuff.size() - 1
+                    && charBuff.get(i - 1).equals(charBuff.get(i + 1))) {
+                int left = lengthBuff.get(i - 1);
+                int right = lengthBuff.get(i + 1);
+                int min = left <= right ? left : right;
 
-                int subLen = min*2+1;
+                int subLen = min * 2 + 1;
 
                 addFreq(oddFreq, subLen);
             }
         }
 
-        for (int len=3; len<=n; len+=2){
-            for (Map.Entry<Integer, Integer> entry : oddFreq.entrySet()){
-                if (entry.getKey()>=len){
-                    count+=entry.getValue();
+        for (int len = 3; len <= n; len += 2) {
+            for (Map.Entry<Integer, Integer> entry : oddFreq.entrySet()) {
+                if (entry.getKey() >= len) {
+                    count += entry.getValue();
                 }
             }
         }
@@ -954,12 +954,535 @@ public class Solution {
         return count;
     }
 
-    static void addFreq(Map<Integer, Integer> freqMap, int value){
+    static void addFreq(Map<Integer, Integer> freqMap, int value) {
         int freq = 1;
-        if (freqMap.containsKey(value)){
-            freq = freqMap.get(value)+1;
+        if (freqMap.containsKey(value)) {
+            freq = freqMap.get(value) + 1;
         }
 
         freqMap.put(value, freq);
+    }
+
+    static int commonChild(String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+        int[][] mem = new int[m+1][n+1];
+
+        // all finals are 0
+
+        for (int i=m-1; i>=0; --i){
+            for (int j=n-1; j>=0; --j){
+                char c1 = s1.charAt(i);
+                char c2 = s2.charAt(j);
+
+                if (c1==c2){
+                    mem[i][j] = mem[i+1][j+1]+1;
+                }else{
+                    mem[i][j] = max(max(mem[i+1][j], mem[i][j+1]), mem[i+1][j+1]);
+                }
+            }
+        }
+
+        return mem[0][0];
+    }
+
+    static int commonChild2(String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+
+        int[][] cache = new int[m + 1][n + 1];
+
+        for (int i = 1; i <= m; ++i) {
+            char x = s1.charAt(i - 1);
+
+            for (int j = 1; j <= n; ++j) {
+                char y = s2.charAt(j - 1);
+
+                if (x == y) {
+                    cache[i][j] = cache[i - 1][j - 1] + 1;
+                } else {
+                    cache[i][j] = max(cache[i - 1][j], cache[i][j - 1]);
+                }
+            }
+        }
+
+        return cache[m][n];
+    }
+
+    static int max(int i, int j) {
+        return i >= j ? i : j;
+    }
+
+    static int minimumAbsoluteDifference(List<Integer> arr) {
+        arr.sort((a, b) -> a - b);
+
+        int min = Integer.MAX_VALUE;
+
+        for (int i = 1; i < arr.size(); ++i) {
+            int diff = Math.abs(arr.get(i) - arr.get(i - 1));
+
+            if (diff < min) {
+                min = diff;
+            }
+        }
+
+        return min;
+    }
+
+    static int luckBalance(int k, List<List<Integer>> contests) {
+        int maxLuck = 0;
+
+        List<Integer> importantLucks = new ArrayList<>();
+
+        for (List<Integer> contest : contests) {
+            if (contest.get(1) == 0) {
+                maxLuck += contest.get(0);
+            } else {
+                importantLucks.add(contest.get(0));
+            }
+        }
+
+        if (k == importantLucks.size()) {
+            for (int luck : importantLucks) {
+                maxLuck += luck;
+            }
+        } else {
+            importantLucks.sort((a, b) -> a - b);
+            int start = max(importantLucks.size() - k, 0);
+
+            for (int i = start; i < importantLucks.size(); ++i) {
+                maxLuck += importantLucks.get(i);
+            }
+
+            for (int i = 0; i < start; ++i) {
+                maxLuck -= importantLucks.get(i);
+            }
+        }
+
+        return maxLuck;
+    }
+
+    static int getMinimumCost(int k, int[] c) {
+        int range = 100;
+        int minCost = 0;
+        int n = c.length;
+
+        if (k >= n) {
+            for (int v : c) {
+                minCost += v;
+            }
+        } else {
+            Arrays.sort(c);
+
+            int times = 0;
+            for (int i = n - 1; i >= 0; i -= k) {
+                for (int j = 0; j < k && j <= i; j++) {
+                    minCost += (times + 1) * c[i - j];
+                }
+
+                times++;
+            }
+        }
+
+        return minCost;
+    }
+
+    static int maxMin(int k, List<Integer> arr) {
+        int min = Integer.MAX_VALUE;
+        int n = arr.size();
+
+        arr.sort((a, b) -> a - b);
+
+        for (int i = 0; i < n - (k - 1); ++i) {
+            int diff = arr.get(i + k - 1) - arr.get(i);
+
+            if (diff < min) {
+                min = diff;
+            }
+        }
+
+        return min;
+    }
+
+    static int[] whatFlavors(List<Integer> cost, int money) {
+        Map<Integer, List<Integer>> costDict = new HashMap<>();
+
+        for (int i = 0; i < cost.size(); ++i) {
+            int c = cost.get(i);
+
+            List<Integer> indexes = costDict.computeIfAbsent(c, k -> new ArrayList<Integer>());
+
+            indexes.add(i + 1);
+        }
+
+        for (Map.Entry<Integer, List<Integer>> entry : costDict.entrySet()) {
+            int c = entry.getKey();
+
+            int d = money - c;
+
+            if (costDict.containsKey(d)) {
+                if (d == c && entry.getValue().size() >= 2) {
+                    return buildResult(entry.getValue().get(0), entry.getValue().get(1));
+                } else {
+                    return buildResult(entry.getValue().get(0), costDict.get(d).get(0));
+                }
+            }
+        }
+
+        return new int[0];
+    }
+
+    static int[] buildResult(int i, int j) {
+        int[] result = new int[2];
+
+        if (i > j) {
+            result[0] = j;
+            result[1] = i;
+        } else {
+            result[0] = i;
+            result[1] = j;
+        }
+
+        return result;
+    }
+
+    static int pairs(int k, List<Integer> arr) {
+        Map<Integer, Integer> valueDict = new HashMap<>();
+
+        for (int v : arr) {
+            int count = 1;
+            if (valueDict.containsKey(v)) {
+                count = valueDict.get(v) + 1;
+            }
+
+            valueDict.put(v, count);
+        }
+
+        int count = 0;
+        for (Map.Entry<Integer, Integer> entry : valueDict.entrySet()) {
+            int v = entry.getKey();
+            int d = v + k;
+            if (valueDict.containsKey(d)) {
+                count += min(entry.getValue(), valueDict.get(d));
+            }
+        }
+
+        return count;
+    }
+
+    static int min(int i, int j) {
+        return i <= j ? i : j;
+    }
+
+    static long triplets(int[] a, int[] b, int[] c) {
+        TreeSet<Integer> setA = new TreeSet<>();
+        TreeSet<Integer> setB = new TreeSet<>();
+        TreeSet<Integer> setC = new TreeSet<>();
+
+        populate(setA, a);
+        populate(setB, b);
+        populate(setC, c);
+
+        int[] uniqA = toArray(setA);
+        int[] uniqC = toArray(setC);
+
+        long count = 0;
+        int ai = 0;
+        int ci = 0;
+
+        for (int bv : setB) {
+            while (ai < uniqA.length && uniqA[ai] <= bv) {
+                ai++;
+            }
+
+            while (ci < uniqC.length && uniqC[ci] <= bv) {
+                ci++;
+            }
+
+            count += ((long) ai) * ((long) ci);
+        }
+
+        return count;
+    }
+
+    static void populate(Set<Integer> set, int[] a) {
+        for (int v : a) {
+            set.add(v);
+        }
+    }
+
+    static int[] toArray(Set<Integer> set) {
+        int[] a = new int[set.size()];
+        int index = 0;
+        for (int v : set) {
+            a[index] = v;
+            index++;
+        }
+
+        return a;
+    }
+
+    static long minTime(Long[] machines, long goal) {
+        long days = 1;
+
+        Arrays.sort(machines);
+
+        long minPeriod = machines[0];
+        int n = machines.length;
+
+        long minDays = 1;
+        long maxDays = goal * minPeriod;
+
+        long productNum = 0;
+
+        while (minDays <= maxDays) {
+            days = (minDays + maxDays) / 2;
+
+            productNum = 0;
+
+            for (int i = 0; i < n; ++i) {
+                productNum += days / machines[i];
+            }
+
+            if (productNum == goal) {
+                break;
+            } else if (productNum > goal) {
+                maxDays = days - 1;
+            } else {
+                minDays = days + 1;
+            }
+        }
+
+        if (productNum < goal) {// no exact days matching goal
+            return days + 1;
+        } else { // multiple exact days matching goal
+            for (long i = days; i >= 0; --i) {
+                long count = 0;
+
+                for (int j = 0; j < n; ++j) {
+                    count += i / machines[j];
+                }
+
+                if (count >= goal) {
+                    days = i;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return days;
+    }
+
+    static int maxSubsetSum(Integer[] arr) {
+        int n = arr.length;
+
+        int[] mem = new int[n];
+
+        mem[n - 1] = max(arr[n - 1], 0);
+
+        if (n == 1) {
+            return mem[n - 1];
+        }
+
+        mem[n - 2] = max(arr[n - 2], 0);
+
+        if (n == 2) {
+            return max(mem[n - 1], mem[n - 2]);
+        }
+
+        mem[n - 3] = max(arr[n - 3], 0) + mem[n - 1];
+
+        if (n == 3) {
+            return max(mem[n - 2], mem[n - 3]);
+        }
+
+        for (int i = n - 4; i >= 0; --i) {
+            int v = max(arr[i], 0);
+            mem[i] = max(v + mem[i + 2], v + mem[i + 3]);
+        }
+
+        return max(mem[0], mem[1]);
+    }
+
+    static int maxSubsetSum2(Integer[] arr) {
+        int n = arr.length;
+        int countPositive = 0;
+
+        int[] dict = new int[n];
+
+        dict[0] = max(arr[0], 0);
+        dict[1] = max(dict[0], arr[1]);
+        dict[2] = max(dict[1], dict[0] + arr[2]);
+
+        int max = max(max(dict[0], dict[1]), dict[2]);
+
+        for (int i = 3; i < n; ++i) {
+            if (arr[i] <= 0) {
+                dict[i] = dict[i - 1];
+            } else {
+                dict[i] = max(max(dict[i - 2] + arr[i], dict[i - 3] + arr[i]), dict[i - 1]);
+            }
+
+            if (dict[i] > max) {
+                max = dict[i];
+            }
+        }
+
+        return max;
+    }
+
+    static String abbreviation2(String a, String b) {
+        return abbreviation2(a.toCharArray(), b.toCharArray())>0 ? "YES" : "NO";
+    }
+
+    static int abbreviation2(char[] a, char[] b) {
+        int m = a.length;
+        int n = b.length;
+        int[][] mem = new int[m + 1][n + 1];
+
+        /** -- initialization begin
+         * final 1: f([], []) = 1
+         * final 2: f(ai, []) = are all ai lower ? 1 :0
+         * final 3: f([], bi) = 0 //not match. no code needed
+         */
+
+        //final 1
+        mem[m][n] = 1;
+
+        //final 2
+        for (int ai = m - 1; ai >= 0; --ai) {
+            mem[ai][n] = Character.isLowerCase(a[ai]) ? mem[ai + 1][n] : 0;
+        }
+
+        // -- initialization end
+
+        for (int ai = m - 1; ai >= 0; --ai) {
+            for (int bi = n - 1; bi >= 0; --bi) {
+                char ac = a[ai];
+                char bc = b[bi];
+
+                if (ac == bc) {
+                    mem[ai][bi] = mem[ai + 1][bi + 1];
+                } else if (Character.toUpperCase(ac) == bc) {
+                    // this causes integer overflow
+                    mem[ai][bi] = mem[ai + 1][bi + 1] + mem[ai + 1][bi];
+                } else if (Character.isLowerCase(ac)) {
+                    mem[ai][bi] = mem[ai + 1][bi];
+                }
+            }
+        }
+
+        return mem[0][0];
+    }
+
+    static String abbreviation(String a, String b) {
+        return abbreviation(a.toCharArray(), b.toCharArray()) ? "YES" : "NO";
+    }
+
+    static boolean abbreviation(char[] a, char[] b) {
+        int m = a.length;
+        int n = b.length;
+        boolean[][] mem = new boolean[m + 1][n + 1];
+
+        /** -- initialization begin
+         * final 1: f([], []) = true
+         * final 2: f(ai, []) = are all ai lower ? true :false
+         * final 3: f([], bi) = false //not match. no code needed
+         */
+
+        //final 1
+        mem[m][n] = true;
+
+        //final 2
+        for (int ai = m - 1; ai >= 0; --ai) {
+            mem[ai][n] = Character.isLowerCase(a[ai]) && mem[ai + 1][n];
+        }
+
+        // -- initialization end
+
+        for (int ai = m - 1; ai >= 0; --ai) {
+            for (int bi = n - 1; bi >= 0; --bi) {
+                char ac = a[ai];
+                char bc = b[bi];
+
+                if (ac == bc) {
+                    mem[ai][bi] = mem[ai + 1][bi + 1];
+                } else if (Character.toUpperCase(ac) == bc) {
+                    mem[ai][bi] = mem[ai + 1][bi + 1] || mem[ai + 1][bi];
+                } else if (Character.isLowerCase(ac)) {
+                    mem[ai][bi] = mem[ai + 1][bi];
+                }
+            }
+        }
+
+        return mem[0][0];
+    }
+
+    static long candies1(int n, List<Integer> arr) {
+        int[] candyRecords = new int[n];
+        candyRecords[0] = 1;
+
+        for (int i = 1; i < n; ++i) {
+            if (arr.get(i) > arr.get(i - 1)) {
+                candyRecords[i] = candyRecords[i - 1] + 1;
+            } else if (arr.get(i) <= arr.get(i - 1)) {
+                candyRecords[i] = 1;
+            }
+        }
+
+        for (int i = n - 1; i > 0; --i) {
+            if (arr.get(i) < arr.get(i - 1) && candyRecords[i - 1] <= candyRecords[i]) {
+                candyRecords[i - 1]++;
+            }
+        }
+
+        long num = 0;
+
+        for (int i = 0; i < n; ++i) {
+            num += candyRecords[i];
+        }
+
+        return num;
+    }
+
+    static long candies(int n, List<Integer> arr) {
+        int[] left = new int[n];
+        int[] right = new int[n];
+
+        left[0] = 0;
+        for (int i = 1; i < n; ++i) {
+            if (arr.get(i) > arr.get(i - 1)) {
+                left[i] = 1;
+            }
+        }
+
+        right[n - 1] = 0;
+
+        for (int i = n - 2; i >= 0; --i) {
+            if (arr.get(i) > arr.get(i + 1)) {
+                right[i] = 1;
+            }
+        }
+
+        for (int i = 1; i < n; ++i) {
+            if (left[i - 1] > 0 && left[i] > 0) {
+                left[i] = left[i - 1] + 1;
+            }
+        }
+
+        for (int i = n - 2; i >= 0; --i) {
+            if (right[i] > 0 && right[i + 1] > 0) {
+                right[i] = right[i + 1] + 1;
+            }
+        }
+
+        long num = 0;
+
+        for (int i = 0; i < n; ++i) {
+            num += max(left[i], right[i]) + 1;
+        }
+
+        return num;
     }
 }
